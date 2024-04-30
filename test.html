@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>Add text</h1>
+    <form onsubmit="getWords();return false;"
+        style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 20px;">
+        <div style="display: flex; gap: 7px;">
+            <textarea id="text" style="min-width: 80vw; width: fit-content;" maxlength="1000" minlength="1"
+                placeholder='Text'></textarea>
+            <input type='number' id="number" style="min-width: 5vw; width: fit-content;" placeholder='num' />
+        </div>
+        <button type="submit" style="width: 30vw;">submit</button>
+    </form>
+    <div style="display: flex; gap: 7px;">
+        <h3>results:</h3>
+        <textarea id="results" placeholder="results" readonly>no results yet</textarea>
+    </div>
+</body>
+<script>
+    getWords = async () => {
+        const words = await fetchWords()
+        document.getElementById("results").value = words.map(item => item.word).join(", ");
+    }
+    fetchWords = async () => {
+        try {
+            const fetchOptions = {
+                method: 'post',
+                headers: new Headers({
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    text: document.getElementById("text").value,
+                    number: document.getElementById("number").value
+                })
+            };
+
+            const fetchResponse = await fetch('http://localhost:5000/mostAppear', fetchOptions);
+            const data = await fetchResponse.json();
+            return data;
+        } catch (e) {
+            return e;
+        }
+    }
+
+</script>
+
+</html>
